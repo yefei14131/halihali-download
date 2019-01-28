@@ -1,0 +1,283 @@
+{
+  "id": "5b9f56c3b4543185f4695ad5",
+  "name": "Case Name",
+  "type": "mix",
+  "description": "Case Description",
+  "created_at": "Thu Nov 08 2018 10:37:03 GMT+0800",
+  "created_by": {
+    "id": "5b9f56c3b4543185f4695ad6",
+    "displayName": "侯守帅",
+    "username": "houshoushuai"
+  },
+  "env": {
+    "id": "5b9f56c3b4543185f4695ad6",
+    "name": "Default API",
+    "description": "Default Hualala API Gateway",
+    "host": "api.hualala.com",
+    "port": "3000",
+    "prefix": "/"
+  },
+  "vars": [{
+    "name": "var1",
+    "type": "const",
+    "value": 123
+  },
+    {
+      "name": "var2",
+      "type": "function",
+      "value": "import datetime\nreturn datetime.datetime.now()\n"
+    },
+    {
+      "name": "var3",
+      "type": "url",
+      "value": "https://raw.githubusercontent.com/.../examples/pretty.json"
+    }
+  ],
+  "request": [{
+    "id": "5b9f56c3b4543185f4695ad5",
+    "project": "5b9f56c3b4543185f4695ad3",
+    "version": "5b9f56c3b4543185f4695ad3",
+    "group": "5b9f56c3b4543185f46952ad",
+    "type": "grpc",
+    "service": "HiveToRedisUdf",
+    "method": "getABC",
+    "description": "Blah blah blah blah....",
+    "timeout": 1000,
+    "delay": 0,
+    "target": {
+      "name": "Default API",
+      "description": "Default Hualala API Gateway",
+      "host": "api.hualala.com",
+      "port": "3000",
+      "prefix": "/"
+    },
+    "params": {
+      "type": "json",
+      "value": "{\n    \"project\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Project Name\",\n        \"description\": \"Project Description\"\n    },\n    \"version\": {\n        \"id\": \"5b9f56c3b4543185f4695ad3\",\n        \"name\": \"v2.3.3\",\n        \"description\": \"Version Description\"\n    },\n    \"type\": \"Java\",\n    \"created_at\": \"Thu Nov 08 2018 10:37:03 GMT+0800\",\n    \"created_by\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"displayName\": \"侯守帅\",\n        \"username\": \"houshoushuai\"\n    },\n    \"env\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Default API\",\n        \"description\": \"Default Hualala API Gateway\",\n        \"host\": \"api.hualala.com\",\n        \"port\": \"3000\",\n        \"prefix\": \"/\"\n    },\n    \"source\": {\n        \"platform\": \"java\",\n        \"path\": \"http://repo.hualala.com/nexus/content/.../HiveToRedisUdf-1.0.1.050150-1.jar\"\n    }\n}"
+    },
+    "extract": [{
+      "name": "projectId",
+      "type": "json_path",
+      "expression": "$.project.id"
+    },
+      {
+        "name": "projectName",
+        "type": "json_path",
+        "expression": "$.project.name"
+      },
+      {
+        "name": "cookieVar",
+        "type": "headers",
+        "expression": "Set-Cookie"
+      }
+    ],
+    "validate": [{
+      "name": "projectId",
+      "comparator": "eq",
+      "value": "123"
+    },
+      {
+        "name": "ProjectName",
+        "comparator": "eq",
+        "value": "project name"
+      },
+      {
+        "name": "cookieVar",
+        "comparator": "exists",
+        "value": true
+      },
+      {
+        "name": "versionNumber",
+        "comparator": "lg",
+        "value": "1"
+      }
+    ]
+  },
+    {
+      "id": "5b9f56c3b4543185f4695ad5",
+      "project": "5b9f56c3b4543185f4695ad3",
+      "version": "5b9f56c3b4543185f4695ad3",
+      "group": "5b9f56c3b4543185f46952ad",
+      "type": "grpc",
+      "service": "HiveToRedisUdf",
+      "method": "updateABC",
+      "description": "Blah blah blah blah....",
+      "timeout": 1000,
+      "delay": 0,
+      "target": {
+        "name": "Default API",
+        "description": "Default Hualala API Gateway",
+        "host": "api.hualala.com",
+        "port": "3000",
+        "prefix": "/"
+      },
+      "params": {
+        "type": "json",
+        "value": "{\n    \"project\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Project Name\",\n        \"description\": \"Project Description\"\n    },\n    \"version\": {\n        \"id\": \"5b9f56c3b4543185f4695ad3\",\n        \"name\": \"v2.3.3\",\n        \"description\": \"Version Description\"\n    },\n    \"type\": \"Java\",\n    \"created_at\": \"Thu Nov 08 2018 10:37:03 GMT+0800\",\n    \"created_by\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"displayName\": \"侯守帅\",\n        \"username\": \"houshoushuai\"\n    },\n    \"env\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Default API\",\n        \"description\": \"Default Hualala API Gateway\",\n        \"host\": \"api.hualala.com\",\n        \"port\": \"3000\",\n        \"prefix\": \"/\"\n    },\n    \"source\": {\n        \"platform\": \"java\",\n        \"path\": \"http://repo.hualala.com/nexus/content/.../HiveToRedisUdf-1.0.1.050150-1.jar\"\n    }\n}"
+      },
+      "extract": [{
+        "name": "projectId",
+        "type": "json_path",
+        "expression": "$.project.id"
+      },
+        {
+          "name": "projectName",
+          "type": "json_path",
+          "expression": "$.project.name"
+        },
+        {
+          "name": "cookieVar",
+          "type": "headers",
+          "expression": "Set-Cookie"
+        }
+      ],
+      "validate": [{
+        "name": "projectId",
+        "comparator": "eq",
+        "value": "123"
+      },
+        {
+          "name": "ProjectName",
+          "comparator": "eq",
+          "value": "project name"
+        },
+        {
+          "name": "cookieVar",
+          "comparator": "exists",
+          "value": true
+        },
+        {
+          "name": "versionNumber",
+          "comparator": "lg",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "id": "5b9f56c3b4543185f4695ad5",
+      "project": "5b9f56c3b4543185f4695ad3",
+      "version": "5b9f56c3b4543185f4695ad3",
+      "group": "5b9f56c3b4543185f46952ad",
+      "type": "grpc",
+      "service": "HiveToRedisUdf",
+      "method": "getABC",
+      "description": "Blah blah blah blah....",
+      "timeout": 1000,
+      "delay": 0,
+      "target": {
+        "name": "Default API",
+        "description": "Default Hualala API Gateway",
+        "host": "api.hualala.com",
+        "port": "3000",
+        "prefix": "/"
+      },
+      "params": {
+        "type": "json",
+        "value": "{\n    \"project\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Project Name\",\n        \"description\": \"Project Description\"\n    },\n    \"version\": {\n        \"id\": \"5b9f56c3b4543185f4695ad3\",\n        \"name\": \"v2.3.3\",\n        \"description\": \"Version Description\"\n    },\n    \"type\": \"Java\",\n    \"created_at\": \"Thu Nov 08 2018 10:37:03 GMT+0800\",\n    \"created_by\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"displayName\": \"侯守帅\",\n        \"username\": \"houshoushuai\"\n    },\n    \"env\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Default API\",\n        \"description\": \"Default Hualala API Gateway\",\n        \"host\": \"api.hualala.com\",\n        \"port\": \"3000\",\n        \"prefix\": \"/\"\n    },\n    \"source\": {\n        \"platform\": \"java\",\n        \"path\": \"http://repo.hualala.com/nexus/content/.../HiveToRedisUdf-1.0.1.050150-1.jar\"\n    }\n}"
+      },
+      "extract": [{
+        "name": "projectId",
+        "type": "json_path",
+        "expression": "$.project.id"
+      },
+        {
+          "name": "projectName",
+          "type": "json_path",
+          "expression": "$.project.name"
+        },
+        {
+          "name": "cookieVar",
+          "type": "headers",
+          "expression": "Set-Cookie"
+        }
+      ],
+      "validate": [{
+        "name": "projectId",
+        "comparator": "eq",
+        "value": "123"
+      },
+        {
+          "name": "ProjectName",
+          "comparator": "eq",
+          "value": "project name"
+        },
+        {
+          "name": "cookieVar",
+          "comparator": "exists",
+          "value": true
+        },
+        {
+          "name": "versionNumber",
+          "comparator": "lg",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "id": "5b9f56c3b4543185f4695ad5",
+      "project": "5b9f56c3b4543185f4695ad3",
+      "version": "5b9f56c3b4543185f4695ad3",
+      "group": "5b9f56c3b4543185f46952ad",
+      "type": "http",
+      "path": "/api/users",
+      "method": "POST",
+      "description": "Blah blah blah blah....",
+      "timeout": 1000,
+      "delay": 0,
+      "target": {
+        "name": "Default API",
+        "description": "Default Hualala API Gateway",
+        "host": "api.hualala.com",
+        "port": "3000",
+        "prefix": "/"
+      },
+      "headers": {
+        "Content-Type": "application/json",
+        "Host": "api.hualala.com",
+        "Accept": "application/json",
+        "Cookie": "${cookie}"
+      },
+      "body": {
+        "type": "json",
+        "value": "{\n    \"project\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Project Name\",\n        \"description\": \"Project Description\"\n    },\n    \"version\": {\n        \"id\": \"5b9f56c3b4543185f4695ad3\",\n        \"name\": \"v2.3.3\",\n        \"description\": \"Version Description\"\n    },\n    \"type\": \"Java\",\n    \"created_at\": \"Thu Nov 08 2018 10:37:03 GMT+0800\",\n    \"created_by\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"displayName\": \"侯守帅\",\n        \"username\": \"houshoushuai\"\n    },\n    \"env\": {\n        \"id\": \"5b9f56c3b4543185f4695ad6\",\n        \"name\": \"Default API\",\n        \"description\": \"Default Hualala API Gateway\",\n        \"host\": \"api.hualala.com\",\n        \"port\": \"3000\",\n        \"prefix\": \"/\"\n    },\n    \"source\": {\n        \"platform\": \"java\",\n        \"path\": \"http://repo.hualala.com/nexus/content/.../HiveToRedisUdf-1.0.1.050150-1.jar\"\n    }\n}"
+      },
+      "query": {
+        "name1": "value1",
+        "name2": "value2"
+      },
+      "extract": [{
+        "name": "projectId",
+        "type": "json_path",
+        "expression": "$.project.id"
+      },
+        {
+          "name": "projectName",
+          "type": "json_path",
+          "expression": "$.project.name"
+        },
+        {
+          "name": "cookieVar",
+          "type": "headers",
+          "expression": "Set-Cookie"
+        }
+      ],
+      "validate": [{
+        "name": "projectId",
+        "comparator": "eq",
+        "value": "123"
+      }, {
+        "name": "ProjectName",
+        "comparator": "eq",
+        "value": "project name"
+      }, {
+        "name": "cookieVar",
+        "comparator": "exists",
+        "value": true
+      }, {
+        "name": "versionNumber",
+        "comparator": "lg",
+        "value": "1"
+      }]
+    }
+  ]
+}
