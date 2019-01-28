@@ -59,5 +59,38 @@ public class DownloadController {
         }
     }
 
+    @RequestMapping(value = "/add2")
+    public void addJob(@RequestParam("url") String url, @RequestParam("fileName") String fileName, HttpServletResponse response ) {
+
+        try {
+
+            if ( url.matches("^.*?/\\w+?\\d{3}.ts$") ){
+                String urlPrefix = url.replaceAll("^(.*?/\\w+?)\\d{3}.ts$", "$1");
+
+                Job job = new Job();
+                job.setUrlPrefix(urlPrefix);
+                job.setFileName(fileName);
+
+                downloadService.addJob(job);
+
+                downloadService.startJob(job);
+
+                HashMap msgData = new HashMap();
+                msgData.put("maxIndex",  job.getMaxIndex());
+
+                ResponseUtils.writeResponseSuccess(response, msgData);
+            }
+
+
+
+        }catch (ServerBaseException e){
+            log.error(ExceptionUtils.getStackTrace(e));
+            ResponseUtils.writeResponseFailure(response, e);
+        } catch (Exception e){
+            log.error(ExceptionUtils.getStackTrace(e));
+            ResponseUtils.writeResponseFailure(response, ExceptionUtils.getStackTrace(e));
+        }
+    }
+
 
 }
