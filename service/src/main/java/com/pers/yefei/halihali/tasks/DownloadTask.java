@@ -104,30 +104,14 @@ public class DownloadTask implements Runnable {
     }
 
     private boolean download(Job job, int index) throws IOException {
-        String url = String.format("%s%s.ts", job.getUrlPrefix(), fillZero(index, 3));
+        String url = job.getUrl(index);
         String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), index);
 
         byte[] bytes = HttpUtil.doGet(url, timeout);
         FileUtil.writeFileData(cachefilePath, bytes);
 
-//            downloadedComponent.put(job.getJobHashCode(), index, bytes);
-//            job.getDownloadingJobs().remove(index);
-
-
         return true;
     }
 
 
-    private String fillZero(int val, int digitNumber){
-        String result = "";
-        for (int i=1; i < digitNumber; i++){
-            if (val < Math.pow((10), (i))){
-                result += "0";
-            }
-        }
-        result += val;
-
-        return result;
-
-    }
 }

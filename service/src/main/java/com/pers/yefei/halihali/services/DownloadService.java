@@ -106,7 +106,7 @@ public class DownloadService {
 
         String urlPrefix = job.getUrlPrefix();
 
-        int maxIndex = findMaxIndex(urlPrefix, 0, initMaxIndex);
+        int maxIndex = findMaxIndex(job, 0, initMaxIndex);
         if(maxIndex == 0 ){
             throw new FindMaxIndexErrorException();
         }
@@ -115,7 +115,7 @@ public class DownloadService {
         job.setMaxIndex(maxIndex);
     }
 
-    private int findMaxIndex(String urlPrefix, int beginIndex, int endIndex){
+    private int findMaxIndex(Job job, int beginIndex, int endIndex){
         if (endIndex - beginIndex < 2){
 
             return beginIndex;
@@ -123,13 +123,13 @@ public class DownloadService {
 
         int index = ( endIndex - beginIndex ) / 2 + beginIndex;
 
-        int responseCode = HttpUtil.getResponseCode(String.format("%s%d.ts", urlPrefix, index));
+        int responseCode = HttpUtil.getResponseCode(job.getUrl(index));
 
         if (responseCode == 404){
-            return findMaxIndex(urlPrefix, beginIndex, index );
+            return findMaxIndex(job, beginIndex, index );
 
         }else if(responseCode == 200){
-            return findMaxIndex(urlPrefix, index, endIndex );
+            return findMaxIndex(job, index, endIndex );
         }
 
         return 0;

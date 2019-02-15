@@ -27,14 +27,20 @@ public class DownloadController {
     private DownloadService downloadService;
 
     @RequestMapping(value = "/add")
-    public void execCase(@RequestParam("url") String url, @RequestParam("fileName") String fileName, HttpServletResponse response ) {
+    public void execCase(@RequestParam("url") String url
+            , @RequestParam("fileName") String fileName
+            , @RequestParam(name = "suffixByte", defaultValue = "3") int suffixByte
+            , HttpServletResponse response ) {
 
         try {
 
-            if ( url.matches("^.*?/\\w{11}\\d{3,4}.ts$") ){
-                String urlPrefix = url.replaceAll("^(.*?/\\w{11})\\d{3,4}.ts$", "$1");
+            String regex = String.format("^(.*?/\\w+?)\\d{%d}.ts$", suffixByte);
+
+            if ( url.matches(regex) ){
+                String urlPrefix = url.replaceAll(regex, "$1");
 
                 Job job = new Job();
+                job.setSuffixByte(suffixByte);
                 job.setUrlPrefix(urlPrefix);
                 job.setFileName(fileName);
 

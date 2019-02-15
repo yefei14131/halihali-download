@@ -13,6 +13,7 @@ import java.util.LinkedList;
  */
 @Data
 public class Job {
+    private int suffixByte = 3; //url后面数字的位数,影响后面0补全的位数
     private String urlPrefix;
     private String fileName;
     private int maxIndex;
@@ -28,4 +29,22 @@ public class Job {
         }
     }
 
+    public String getUrl(int index){
+
+        return String.format("%s%s.ts", urlPrefix, fillZero(index, suffixByte));
+    }
+
+
+    private String fillZero(int val, int digitNumber){
+        String result = "";
+        for (int i=1; i < digitNumber; i++){
+            if (val < Math.pow((10), (i))){
+                result += "0";
+            }
+        }
+        result += val;
+
+        return result;
+
+    }
 }
