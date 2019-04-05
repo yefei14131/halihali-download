@@ -53,6 +53,8 @@ public class HttpUtil {
 
 			httpcon.setConnectTimeout(10 * 60 * 1000);
 			httpcon.setReadTimeout(10 * 60 * 1000);
+			httpcon.setConnectTimeout(0);
+			httpcon.setReadTimeout(0);
 			httpcon.connect();
 
 			return httpcon.getResponseCode();

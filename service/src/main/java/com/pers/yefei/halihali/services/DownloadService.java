@@ -50,11 +50,17 @@ public class DownloadService {
 
 
     public void addJob(Job job) throws IOException {
-        //检查写入文件名是否重复，重复则修复
 
+        int suffixByte = getSuffixByte(job);
+        String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w$", suffixByte);
+        String urlPrefix = job.getDemoUrl().replaceAll(regex, "$1");
+
+        job.setSuffixByte(suffixByte);
+        job.setUrlPrefix(urlPrefix);
+
+        //检查写入文件名是否重复，重复则修复
         String fileName = writeComponent.initDistFile(job.getFileName());
         job.setFileName(fileName);
-
 
         findMaxIndex(job);
         for (int i=0; i <= job.getMaxIndex(); i++)
@@ -101,10 +107,29 @@ public class DownloadService {
     }
 
 
+    private int getSuffixByte(Job job){
+        log.debug("正在计算后缀索引被替换的位数：{}", job.getFileName());
+
+        String urlPrefix = job.getUrlPrefix();
+
+        String url1000 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "1000$1");
+
+        int responseCode = HttpUtil.getResponseCode(url1000);
+        int suffixByte = 0;
+        if(responseCode == 200){
+            suffixByte = 3;
+        }else{
+            suffixByte = 4;
+        }
+
+        log.debug("{} 后缀索引被替换的位数：{}", job.getFileName(), suffixByte);
+        return suffixByte;
+    }
+
     private void findMaxIndex(Job job){
         log.debug("正在查找最大index：{}", job.getFileName());
 
-        String urlPrefix = job.getUrlPrefix();
+//        String urlPrefix = job.getUrlPrefix();
 
         int maxIndex = findMaxIndex(job, 0, initMaxIndex);
         if(maxIndex == 0 ){
@@ -122,8 +147,12 @@ public class DownloadService {
         }
 
         int index = ( endIndex - beginIndex ) / 2 + beginIndex;
-
-        int responseCode = HttpUtil.getResponseCode(job.getUrl(index));
+        int responseCode = 0;
+        try {
+            responseCode = HttpUtil.getResponseCode(job.getUrl(index));
+        }catch (Exception e){
+            responseCode = HttpUtil.getResponseCode(job.getUrl(index));
+        }
 
         if (responseCode == 404){
             return findMaxIndex(job, beginIndex, index );

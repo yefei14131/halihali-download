@@ -29,20 +29,17 @@ public class DownloadController {
     @RequestMapping(value = "/add")
     public void execCase(@RequestParam("url") String url
             , @RequestParam("fileName") String fileName
-            , @RequestParam(name = "suffixByte", defaultValue = "3") int suffixByte
             , HttpServletResponse response ) {
 
         try {
 
-            String regex = String.format("^(.*?/\\w+?)\\d{%d}.ts$", suffixByte);
+            String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w+$", 3);
 
             if ( url.matches(regex) ){
-                String urlPrefix = url.replaceAll(regex, "$1");
 
                 Job job = new Job();
-                job.setSuffixByte(suffixByte);
-                job.setUrlPrefix(urlPrefix);
                 job.setFileName(fileName);
+                job.setDemoUrl(url);
 
                 downloadService.addJob(job);
 
@@ -52,6 +49,9 @@ public class DownloadController {
                 msgData.put("maxIndex",  job.getMaxIndex());
 
                 ResponseUtils.writeResponseSuccess(response, msgData);
+            }else{
+                ResponseUtils.writeResponseFailure(response, "url格式不正确");
+
             }
 
 
