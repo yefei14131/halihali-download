@@ -52,7 +52,7 @@ public class DownloadService {
     public void addJob(Job job) throws IOException {
 
         int suffixByte = getSuffixByte(job);
-        String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w$", suffixByte);
+        String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w+$", suffixByte);
         String urlPrefix = job.getDemoUrl().replaceAll(regex, "$1");
 
         job.setSuffixByte(suffixByte);
@@ -112,11 +112,16 @@ public class DownloadService {
 
         String urlPrefix = job.getUrlPrefix();
 
+        String url999 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "999$1");
         String url1000 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "1000$1");
 
-        int responseCode = HttpUtil.getResponseCode(url1000);
+        log.debug("{} 测试url：{}", job.getFileName(), url999);
+        log.debug("{} 测试url：{}", job.getFileName(), url1000);
+
+        int responseCode999 = HttpUtil.getResponseCode(url999);
+        int responseCode1000 = HttpUtil.getResponseCode(url1000);
         int suffixByte = 0;
-        if(responseCode == 200){
+        if(responseCode999 == 404 || responseCode1000 == 200){
             suffixByte = 3;
         }else{
             suffixByte = 4;
@@ -149,7 +154,10 @@ public class DownloadService {
         int index = ( endIndex - beginIndex ) / 2 + beginIndex;
         int responseCode = 0;
         try {
-            responseCode = HttpUtil.getResponseCode(job.getUrl(index));
+//            log.info("{} 正在尝试索引:{}",  job.getFileName(), index);
+            String url = job.getUrl(index);
+            responseCode = HttpUtil.getResponseCode(url);
+            log.info("{} 正在尝试索引:{}, 状态码：{}, url:{}",  job.getFileName(), index, responseCode, url);
         }catch (Exception e){
             responseCode = HttpUtil.getResponseCode(job.getUrl(index));
         }
