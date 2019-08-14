@@ -5,7 +5,6 @@ import com.pers.yefei.halihali.components.JobComponent;
 import com.pers.yefei.halihali.components.WriteComponent;
 import com.pers.yefei.halihali.exception.FindMaxIndexErrorException;
 import com.pers.yefei.halihali.model.bean.Job;
-import com.pers.yefei.halihali.tasks.CheckDownloadTask;
 import com.pers.yefei.halihali.tasks.DownloadTask;
 import com.pers.yefei.halihali.tasks.FlushTask;
 import com.pers.yefei.halihali.utils.HttpUtil;
@@ -14,12 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author: yefei
@@ -30,7 +24,10 @@ import java.util.concurrent.TimeUnit;
 public class DownloadService {
 
     private final static int initMaxIndex = 3000;
-    private final static int downloadPoolNum = 30;
+    private final static int downloadPoolNum = 10;
+
+    private ThreadPoolExecutor executor = new ThreadPoolExecutor(downloadPoolNum, downloadPoolNum * 2, 200, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(initMaxIndex * 2));
 
     @Autowired
     private JobComponent jobComponent;
@@ -46,6 +43,7 @@ public class DownloadService {
     public void init(){
 
 //        jobComponent.add(job);
+
     }
 
 
@@ -69,40 +67,45 @@ public class DownloadService {
         jobComponent.add(job);
     }
 
-    public void startJob(Job job){
+    public void startJob(Job job) throws InterruptedException {
 
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(downloadPoolNum, downloadPoolNum * 2, 200, TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<Runnable>(downloadPoolNum));
+        CountDownLatch countDownLatch = new CountDownLatch(job.getMaxIndex());
 
-        for(int i=0; i < downloadPoolNum; i++){
+        for(int i=0; i <= job.getMaxIndex(); i++){
 
-            List<Integer> indexList = new ArrayList<>();
-            for( int j=0; j<= job.getMaxIndex() / downloadPoolNum; j++){
-                if(j * downloadPoolNum + i > job.getMaxIndex()){
-                    break;
-                }
-                indexList.add(j * downloadPoolNum + i);
-            }
-
-            DownloadTask downloadTask = new DownloadTask(job, indexList, downloadedComponent, writeComponent);
+            DownloadTask downloadTask = new DownloadTask(job, i, countDownLatch, downloadedComponent, writeComponent);
             executor.execute(downloadTask);
         }
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        if (countDownLatch.getCount() == 0){
+                            break;
+                        }
+                        Thread.sleep(5000);
+                        log.info("queue size:{}, active:{} , max: {}, core:{}", executor.getQueue().size(), executor.getActiveCount(), executor.getMaximumPoolSize(), executor.getCorePoolSize());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+        countDownLatch.await();
         // 缓存写文件
         new Thread(new FlushTask(job, downloadedComponent, writeComponent, jobComponent)).start();
 
-//        executor.shutdown();
+
     }
+
+
 
     public void flushTofile(){
         jobComponent.getJobs().forEach(job -> {
             new Thread(new FlushTask(job, downloadedComponent, writeComponent, jobComponent)).start();
-        });
-    }
-
-    public void checkDownloadingJob(){
-        jobComponent.getJobs().forEach(job -> {
-            new Thread(new CheckDownloadTask(job, downloadedComponent, writeComponent)).start();
         });
     }
 

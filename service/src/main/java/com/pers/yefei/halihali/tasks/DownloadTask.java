@@ -2,7 +2,6 @@ package com.pers.yefei.halihali.tasks;
 
 import com.pers.yefei.halihali.components.DownloadedComponent;
 import com.pers.yefei.halihali.components.WriteComponent;
-import com.pers.yefei.halihali.model.bean.DownloadingJob;
 import com.pers.yefei.halihali.model.bean.Job;
 import com.pers.yefei.halihali.utils.FileUtil;
 import com.pers.yefei.halihali.utils.HttpUtil;
@@ -12,6 +11,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author: yefei
@@ -24,14 +24,13 @@ public class DownloadTask implements Runnable {
 
     private Job job;
 
+    private int index;
+
     private DownloadedComponent downloadedComponent;
 
     private WriteComponent writeComponent;
 
-    private List<Integer> indexList = new ArrayList<>();
-
-    private List<Integer> retryIndexList = new ArrayList<>();
-
+    private CountDownLatch countDownLatch;
 
     /**
      * When an object implementing interface <code>Runnable</code> is used
@@ -46,64 +45,41 @@ public class DownloadTask implements Runnable {
      */
     @Override
     public void run() {
-        List<Integer> failIndexList = download(indexList);
-        if (indexList.size() == 1){
-            //补偿进程，直接退出
+
+        if (downloadedComponent.hasDownloaded(job, index)){
+            log.info("{} index {} 已经下载过，跳过下载任务", job.getFileName(), index);
+            countDownLatch.countDown();
             return;
         }
 
-        List<Integer> retryIndexList = download(failIndexList);
-        while (retryIndexList.size() > 0){
-            retryIndexList = download(retryIndexList);
-        }
-
-    }
-
-    private List<Integer> download(List<Integer> indexList){
-        List<Integer> retryIndexList = new ArrayList<>();
-
-        for (int i=0; i < indexList.size(); i++){
-            int index = indexList.get(i);
+        boolean success = false;
+        while (!success){
 
             try {
-                if (downloadedComponent.hasDownloaded(job, index)){
-                    log.debug("{} index {} 已经下载过，跳过下载任务", job.getFileName(), index);
-                    continue;
-                }
-
-//                DownloadingJob downloadingJob = new DownloadingJob(job.getJobHashCode(), index);
-//                job.getDownloadingJobs().put(index, downloadingJob);
-
-                download(job, index);
-
+                download();
                 log.info("{} index {} 缓存完毕", job.getFileName(), index);
+                countDownLatch.countDown();
+                success = true;
+            } catch (IOException e) {
+                log.info("{} index {} 下载失败，重新开始", job.getFileName(), index);
 
-            }catch (Exception e){
-                log.error(ExceptionUtils.getStackTrace(e));
-                retryIndexList.add(index);
             }
+
         }
-
-        return retryIndexList;
     }
 
 
-    public DownloadTask(Job job, List<Integer> indexList, DownloadedComponent downloadedComponent, WriteComponent writeComponent){
+
+    public DownloadTask(Job job, int index, CountDownLatch countDownLatch, DownloadedComponent downloadedComponent, WriteComponent writeComponent){
         this.job = job;
-        this.indexList = indexList;
+        this.index = index;
         this.downloadedComponent = downloadedComponent;
         this.writeComponent = writeComponent;
+        this.countDownLatch = countDownLatch;
     }
 
 
-    public DownloadTask(Job job, int index, DownloadedComponent downloadedComponent, WriteComponent writeComponent){
-        this.job = job;
-        this.indexList.add(index);
-        this.downloadedComponent = downloadedComponent;
-        this.writeComponent = writeComponent;
-    }
-
-    private boolean download(Job job, int index) throws IOException {
+    private boolean download() throws IOException {
         String url = job.getUrl(index);
         String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), index);
 

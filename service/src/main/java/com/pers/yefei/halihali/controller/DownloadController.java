@@ -32,7 +32,7 @@ public class DownloadController {
             , HttpServletResponse response ) {
 
         try {
-
+            url = url.trim();
             String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w+$", 3);
 
             if ( url.matches(regex) ){
@@ -43,7 +43,17 @@ public class DownloadController {
 
                 downloadService.addJob(job);
 
-                downloadService.startJob(job);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            downloadService.startJob(job);
+                        } catch (InterruptedException e) {
+                            log.error(ExceptionUtils.getStackTrace(e));
+                        }
+                    }
+                }).start();
+
 
                 HashMap msgData = new HashMap();
                 msgData.put("maxIndex",  job.getMaxIndex());
@@ -64,39 +74,39 @@ public class DownloadController {
             ResponseUtils.writeResponseFailure(response, ExceptionUtils.getStackTrace(e));
         }
     }
-
-    @RequestMapping(value = "/add2")
-    public void addJob(@RequestParam("url") String url, @RequestParam("fileName") String fileName, HttpServletResponse response ) {
-
-        try {
-
-            if ( url.matches("^.*?/\\w+?\\d{3}.ts$") ){
-                String urlPrefix = url.replaceAll("^(.*?/\\w+?)\\d{3}.ts$", "$1");
-
-                Job job = new Job();
-                job.setUrlPrefix(urlPrefix);
-                job.setFileName(fileName);
-
-                downloadService.addJob(job);
-
-                downloadService.startJob(job);
-
-                HashMap msgData = new HashMap();
-                msgData.put("maxIndex",  job.getMaxIndex());
-
-                ResponseUtils.writeResponseSuccess(response, msgData);
-            }
-
-
-
-        }catch (ServerBaseException e){
-            log.error(ExceptionUtils.getStackTrace(e));
-            ResponseUtils.writeResponseFailure(response, e);
-        } catch (Exception e){
-            log.error(ExceptionUtils.getStackTrace(e));
-            ResponseUtils.writeResponseFailure(response, ExceptionUtils.getStackTrace(e));
-        }
-    }
+//
+//    @RequestMapping(value = "/add2")
+//    public void addJob(@RequestParam("url") String url, @RequestParam("fileName") String fileName, HttpServletResponse response ) {
+//
+//        try {
+//
+//            if ( url.matches("^.*?/\\w+?\\d{3}.ts$") ){
+//                String urlPrefix = url.replaceAll("^(.*?/\\w+?)\\d{3}.ts$", "$1");
+//
+//                Job job = new Job();
+//                job.setUrlPrefix(urlPrefix);
+//                job.setFileName(fileName);
+//
+//                downloadService.addJob(job);
+//
+//                downloadService.startJob(job);
+//
+//                HashMap msgData = new HashMap();
+//                msgData.put("maxIndex",  job.getMaxIndex());
+//
+//                ResponseUtils.writeResponseSuccess(response, msgData);
+//            }
+//
+//
+//
+//        }catch (ServerBaseException e){
+//            log.error(ExceptionUtils.getStackTrace(e));
+//            ResponseUtils.writeResponseFailure(response, e);
+//        } catch (Exception e){
+//            log.error(ExceptionUtils.getStackTrace(e));
+//            ResponseUtils.writeResponseFailure(response, ExceptionUtils.getStackTrace(e));
+//        }
+//    }
 
 
 }

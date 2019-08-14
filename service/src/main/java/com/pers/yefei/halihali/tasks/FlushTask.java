@@ -56,7 +56,7 @@ public class FlushTask implements Runnable {
                 LinkedList<Integer> finishedIndexlist = job.getFinishedIndexlist();
                 if (finishedIndexlist.size() >= job.getMaxIndex() + 1) {
                     log.info("{} 下载完成，maxIndex:{}, finishedSize:{}", job.getFileName(), job.getMaxIndex(), finishedIndexlist.size());
-                    log.info("{} 下载完成，finishedIndexList:{}", job.getFileName(), finishedIndexlist);
+//                    log.info("{} 下载完成，finishedIndexList:{}", job.getFileName(), finishedIndexlist);
                     jobComponent.remove(job);
                     downloadedComponent.removeCache(job);
                     break;

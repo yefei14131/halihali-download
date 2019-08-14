@@ -85,10 +85,10 @@
 
 
 		<!-- 调度器 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-quartz</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-quartz</artifactId>-->
+		<!--</dependency>-->
 
 
 		<!--使用durid连接池的依赖-->

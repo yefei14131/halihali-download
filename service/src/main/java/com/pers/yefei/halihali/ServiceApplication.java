@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication(exclude= {})
-@EnableScheduling
+//@EnableScheduling
 @ComponentScan(basePackages = {"com.pers.yefei"})
 public class ServiceApplication {
 

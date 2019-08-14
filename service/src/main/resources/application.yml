@@ -38,13 +38,13 @@ spring:
     settings:
       number_format: '0.##'   #数字格式化，无小数点
 
-
-  quartz:
-    properties:
-      org:
-        quartz:
-          scheduler:
-    job-store-type: memory
+#
+#  quartz:
+#    properties:
+#      org:
+#        quartz:
+#          scheduler:
+#    job-store-type: memory
 
 logging:
   config: classpath:logback-local.xml
