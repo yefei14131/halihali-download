@@ -3,18 +3,13 @@ package com.pers.yefei.halihali.tasks;
 import com.pers.yefei.halihali.components.DownloadedComponent;
 import com.pers.yefei.halihali.components.JobComponent;
 import com.pers.yefei.halihali.components.WriteComponent;
+import com.pers.yefei.halihali.config.ApplicationContextProvider;
 import com.pers.yefei.halihali.model.bean.Job;
 import com.pers.yefei.halihali.utils.FileUtil;
-import com.pers.yefei.halihali.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.ibatis.annotations.Flush;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
 
 /**
@@ -26,11 +21,11 @@ public class FlushTask implements Runnable {
 
     private Job job;
 
-    private DownloadedComponent downloadedComponent;
+    private DownloadedComponent downloadedComponent = ApplicationContextProvider.getBean(DownloadedComponent.class);
 
-    private WriteComponent writeComponent;
+    private WriteComponent writeComponent = ApplicationContextProvider.getBean(WriteComponent.class);
 
-    private JobComponent jobComponent;
+    private JobComponent jobComponent = ApplicationContextProvider.getBean(JobComponent.class);;
 
     private static final int sleepTime = 10 * 1000;
 
@@ -103,11 +98,8 @@ public class FlushTask implements Runnable {
 
     }
 
-    public FlushTask(Job job, DownloadedComponent downloadedComponent, WriteComponent writeComponent, JobComponent jobComponent){
+    public FlushTask(Job job){
         this.job = job;
-        this.downloadedComponent = downloadedComponent;
-        this.writeComponent = writeComponent;
-        this.jobComponent = jobComponent;
     }
 
 

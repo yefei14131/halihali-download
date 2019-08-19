@@ -2,15 +2,13 @@ package com.pers.yefei.halihali.tasks;
 
 import com.pers.yefei.halihali.components.DownloadedComponent;
 import com.pers.yefei.halihali.components.WriteComponent;
+import com.pers.yefei.halihali.config.ApplicationContextProvider;
 import com.pers.yefei.halihali.model.bean.Job;
 import com.pers.yefei.halihali.utils.FileUtil;
-import com.pers.yefei.halihali.utils.HttpUtil;
+import com.pers.yefei.halihali.utils.OkHttpHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -20,15 +18,15 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class DownloadTask implements Runnable {
 
-    private final static int timeout = 60; //超时时间
+    private DownloadedComponent downloadedComponent = ApplicationContextProvider.getBean(DownloadedComponent.class);
+
+    private WriteComponent writeComponent = ApplicationContextProvider.getBean(WriteComponent.class);
+
+    private OkHttpHelper okHttpHelper = ApplicationContextProvider.getBean(OkHttpHelper.class);
 
     private Job job;
 
     private int index;
-
-    private DownloadedComponent downloadedComponent;
-
-    private WriteComponent writeComponent;
 
     private CountDownLatch countDownLatch;
 
@@ -70,11 +68,9 @@ public class DownloadTask implements Runnable {
 
 
 
-    public DownloadTask(Job job, int index, CountDownLatch countDownLatch, DownloadedComponent downloadedComponent, WriteComponent writeComponent){
+    public DownloadTask(Job job, int index, CountDownLatch countDownLatch){
         this.job = job;
         this.index = index;
-        this.downloadedComponent = downloadedComponent;
-        this.writeComponent = writeComponent;
         this.countDownLatch = countDownLatch;
     }
 
@@ -83,7 +79,8 @@ public class DownloadTask implements Runnable {
         String url = job.getUrl(index);
         String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), index);
 
-        byte[] bytes = HttpUtil.doGet(url, timeout);
+//        byte[] bytes = HttpUtil.doGet(url, timeout);
+        byte[] bytes = okHttpHelper.getResponseByte(url);
         FileUtil.writeFileData(cachefilePath, bytes);
 
         return true;

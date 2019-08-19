@@ -37,16 +37,7 @@ public class WriteComponent {
 
         int index = 0;
         String finalFileName = genFileName(fileName, index);;
-//        while (true){
-//
-//            File distFile = new File(String.format("%s/%s.ts", fileDir, genFileName(fileName, index)));
-//            if( !distFile.exists()){
-//                distFile.createNewFile();
-//                finalFileName = genFileName(fileName, index);
-//                break;
-//            }
-//            index++;
-//        }
+
 
         //缓存文件路径
         String cacheFileDirPath = getCacheFileDir(finalFileName);
