@@ -90,7 +90,7 @@ public class DownloadService {
 
         countDownLatch.await();
         long durationTime = System.currentTimeMillis() - startTime;
-        log.info("{} 下载耗时 {}s ", job.getFileName(), durationTime / 1000);
+        log.info("{} 下载耗时 {}s, connectionCount : {}", job.getFileName(), durationTime / 1000, okHttpHelper.connectionCount());
         // 缓存写文件
         new FlushTask(job).run();
 

@@ -1,13 +1,9 @@
 package com.pers.yefei.halihali.utils;
 
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
+import okhttp3.*;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -15,8 +11,17 @@ import java.util.concurrent.TimeUnit;
 public class OkHttpHelper {
 
     final static int timeout = 60;
+    private static OkHttpClient okHttpClient;
 
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.SECONDS).build();
+    @PostConstruct
+    void init(){
+        ConnectionPool connectionPool = new ConnectionPool(10, 10, TimeUnit.MINUTES);
+        okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(timeout, TimeUnit.SECONDS)
+                .connectionPool(connectionPool)
+                .build();
+    }
+
 
     public byte[] getResponseByte(String url) throws IOException {
 
@@ -46,6 +51,8 @@ public class OkHttpHelper {
         }
     }
 
-
+    public int connectionCount(){
+        return okHttpClient.connectionPool().connectionCount();
+    }
 
 }
