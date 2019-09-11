@@ -29,7 +29,7 @@ public class DownloadedComponent {
                 return null;
             }
 
-            String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), index);
+            String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), job.getSuffixName(), index);
             return FileUtil.readContentByteArray(cachefilePath);
 
         } catch (FileNotFoundException e) {
@@ -40,7 +40,7 @@ public class DownloadedComponent {
     }
 
     public boolean hasDownloaded(Job job, int index){
-        String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), index);
+        String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), job.getSuffixName(), index);
         File cacheFile = new File(cachefilePath);
         if ( cacheFile.exists() && cacheFile.length() > 0 ){
             return true;

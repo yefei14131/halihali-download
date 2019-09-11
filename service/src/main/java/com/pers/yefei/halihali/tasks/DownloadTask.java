@@ -77,7 +77,7 @@ public class DownloadTask implements Runnable {
 
     private boolean download() throws IOException {
         String url = job.getUrl(index);
-        String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), index);
+        String cachefilePath = writeComponent.getCacheFilePath(job.getFileName(), job.getSuffixName(), index);
 //        okHttpHelper.getResponseCode(url);
 //        byte[] bytes = HttpUtil.doGet(url, timeout);
         byte[] bytes = okHttpHelper.getResponseByte(url);

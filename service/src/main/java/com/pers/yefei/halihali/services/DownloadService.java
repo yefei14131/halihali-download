@@ -44,14 +44,17 @@ public class DownloadService {
     public void addJob(Job job) throws IOException {
 
         int suffixByte = getSuffixByte(job);
-        String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w+$", suffixByte);
+        String regex = String.format("^(.*?/\\w+?)\\d{%d}\\.\\w+$", suffixByte);
         String urlPrefix = job.getDemoUrl().replaceAll(regex, "$1");
 
         job.setSuffixByte(suffixByte);
         job.setUrlPrefix(urlPrefix);
 
+        // 文件扩展名
+        job.setSuffixName(job.getDemoUrl().replaceAll("^(.*?/\\w+?)(\\.\\w+)$", "$2"));
+
         //检查写入文件名是否重复，重复则修复
-        String fileName = writeComponent.initDistFile(job.getFileName());
+        String fileName = writeComponent.initDistFile(job.getFileName(), job.getSuffixName());
         job.setFileName(fileName);
 
         findMaxIndex(job);
@@ -108,20 +111,26 @@ public class DownloadService {
 
     private int getSuffixByte(Job job){
         log.debug("正在计算后缀索引被替换的位数：{}", job.getFileName());
-
-        String url999 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "999$1");
-        String url1000 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "1000$1");
-
-        log.debug("{} 测试url：{}", job.getFileName(), url999);
-        log.debug("{} 测试url：{}", job.getFileName(), url1000);
-
-        int responseCode999 = okHttpHelper.getResponseCode(url999);
-        int responseCode1000 = okHttpHelper.getResponseCode(url1000);
         int suffixByte = 0;
-        if(responseCode999 == 404 || responseCode1000 == 200){
+        if( job.getDemoUrl().matches("^(.*?/\\w+?)[a-z,A-Z]\\d{3}\\.\\w+$") ){
             suffixByte = 3;
         }else{
-            suffixByte = 4;
+
+
+            String url999 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "999$1");
+            String url1000 =  job.getDemoUrl().replaceAll("\\d{3}(\\.\\w+)$", "1000$1");
+
+            log.debug("{} 测试url：{}", job.getFileName(), url999);
+            log.debug("{} 测试url：{}", job.getFileName(), url1000);
+
+            int responseCode999 = okHttpHelper.getResponseCode(url999);
+            int responseCode1000 = okHttpHelper.getResponseCode(url1000);
+
+            if(responseCode999 == 404 || responseCode1000 == 200){
+                suffixByte = 3;
+            }else{
+                suffixByte = 4;
+            }
         }
 
         log.debug("{} 后缀索引被替换的位数：{}", job.getFileName(), suffixByte);

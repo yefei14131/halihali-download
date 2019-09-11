@@ -17,6 +17,7 @@ public class Job {
     private int suffixByte = 3; //url后面数字的位数,影响后面0补全的位数
     private String urlPrefix;
     private String fileName;
+    private String suffixName;
     private int maxIndex;
     private LinkedList<Integer> indexlist = new LinkedList<>();
     private LinkedList<Integer> finishedIndexlist = new LinkedList<>();
@@ -32,7 +33,7 @@ public class Job {
 
     public String getUrl(int index){
 
-        return String.format("%s%s.ts", urlPrefix, fillZero(index, suffixByte));
+        return String.format("%s%s%s", urlPrefix, fillZero(index, suffixByte), suffixName);
     }
 
 

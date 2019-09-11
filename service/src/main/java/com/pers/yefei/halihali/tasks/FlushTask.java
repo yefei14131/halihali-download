@@ -77,7 +77,7 @@ public class FlushTask implements Runnable {
 
                     try {
 
-                        File distFile = new File(writeComponent.getDistFilePath(fileName));
+                        File distFile = new File(writeComponent.getDistFilePath(fileName, job.getSuffixName()));
 
 //                        FileWriter fileWriter = new FileWriter(distFile, true);
 //                        fileWriter.write(new String(content));

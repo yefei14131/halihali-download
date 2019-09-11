@@ -18,10 +18,11 @@ public class WriteComponent {
     /**
      *
      * @param fileName
+     * @param suffixName
      * @return  final fileName
      * @throws IOException
      */
-    public String initDistFile(String fileName) throws IOException {
+    public String initDistFile(String fileName, String suffixName) throws IOException {
 
         if (StringUtils.isEmpty(fileName)){
             return null;
@@ -46,7 +47,7 @@ public class WriteComponent {
             cacheFileDir.mkdirs();
         }
 
-        File distFile = new File(getDistFilePath(finalFileName));
+        File distFile = new File(getDistFilePath(finalFileName, suffixName));
         if(distFile.exists()){
             //清空文件
             FileWriter fw = new FileWriter(distFile);
@@ -57,16 +58,16 @@ public class WriteComponent {
         return finalFileName;
     }
 
-    public String getDistFilePath(String fileName){
-        return String.format("%s/tmp/yefei/halihali/%s.ts", System.getProperties().getProperty("user.home"), fileName);
+    public String getDistFilePath(String fileName, String suffixName){
+        return String.format("%s/tmp/yefei/halihali/%s.%s", System.getProperties().getProperty("user.home"), fileName, suffixName);
     }
 
     public String getCacheFileDir(String fileName){
         return String.format("%s/tmp/yefei/halihali/%s.cache", System.getProperties().getProperty("user.home"), fileName);
     }
 
-    public String getCacheFilePath(String fileName, int index){
-        return String.format("%s/tmp/yefei/halihali/%s.cache/%s.ts", System.getProperties().getProperty("user.home"), fileName, fillZero(index, 4));
+    public String getCacheFilePath(String fileName, String suffixName, int index){
+        return String.format("%s/tmp/yefei/halihali/%s.cache/%s.%s", System.getProperties().getProperty("user.home"), fileName, fillZero(index, 4), suffixName);
     }
 
 
