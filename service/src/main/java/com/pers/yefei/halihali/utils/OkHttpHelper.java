@@ -1,5 +1,6 @@
 package com.pers.yefei.halihali.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class OkHttpHelper {
 
     final static int timeout = 60;
@@ -25,7 +27,8 @@ public class OkHttpHelper {
 
     public byte[] getResponseByte(String url) throws IOException {
 
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().url(url)
+                .build();
         Call call = okHttpClient.newCall(request);
 
         Response response = call.execute();
@@ -37,7 +40,8 @@ public class OkHttpHelper {
 
 
     public int getResponseCode(String url) {
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().url(url)
+                .build();
         Call call = okHttpClient.newCall(request);
 
         try {
@@ -47,6 +51,7 @@ public class OkHttpHelper {
 
             return code;
         } catch (IOException e) {
+            log.error("curl error", e);
            return 0;
         }
     }

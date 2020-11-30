@@ -33,7 +33,7 @@ public class DownloadController {
 
         try {
             url = url.trim();
-            String regex = String.format("^(.*?/\\w+?)\\d{%d}.\\w+$", 3);
+            String regex = String.format("^(.*?/[\\-\\w]+?)\\d{%d}.\\w+$", 3);
 
             if ( url.matches(regex) ){
 
